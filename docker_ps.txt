@@ -1,6 +1,0 @@
-﻿NAME                   IMAGE                  COMMAND                  SERVICE             CREATED       STATUS                 PORTS
-de_airflow_init        apache/airflow:2.8.0   "/bin/bash -c 'airflΓÇª"   airflow-init        8 hours ago   Created                
-de_airflow_scheduler   apache/airflow:2.8.0   "/usr/bin/dumb-init ΓÇª"   airflow-scheduler   8 hours ago   Created                
-de_airflow_webserver   apache/airflow:2.8.0   "/usr/bin/dumb-init ΓÇª"   airflow-webserver   8 hours ago   Created                
-de_minio               minio/minio:latest     "/usr/bin/docker-entΓÇª"   minio               8 hours ago   Up 8 hours (healthy)   0.0.0.0:9000-9001->9000-9001/tcp, [::]:9000-9001->9000-9001/tcp
-de_postgres            postgres:15            "docker-entrypoint.sΓÇª"   postgres            8 hours ago   Up 8 hours (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
