@@ -27,7 +27,16 @@ GOLD_DIR = DATA_DIR / "gold" / "exchange_rates"
 
 # ── API defaults ────────────────────────────────────────────────────
 DEFAULT_SYMBOLS = [
-    "USD", "GBP", "JPY", "CAD", "AUD", "CHF", "CNY", "INR", "SGD", "HKD",
+    "USD",
+    "GBP",
+    "JPY",
+    "CAD",
+    "AUD",
+    "CHF",
+    "CNY",
+    "INR",
+    "SGD",
+    "HKD",
 ]
 MAX_RETRIES = 3
 RETRY_BACKOFF_FACTOR = 2  # seconds

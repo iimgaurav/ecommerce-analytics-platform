@@ -34,20 +34,21 @@ from pyspark.sql.types import (
 logger = logging.getLogger(__name__)
 
 # Schema that mirrors the exchangeratesapi.io response
-RAW_SCHEMA = StructType([
-    StructField("success", BooleanType(), True),
-    StructField("timestamp", LongType(), True),
-    StructField("base", StringType(), True),
-    StructField("date", StringType(), True),
-    StructField("rates", MapType(StringType(), DoubleType()), True),
-])
+RAW_SCHEMA = StructType(
+    [
+        StructField("success", BooleanType(), True),
+        StructField("timestamp", LongType(), True),
+        StructField("base", StringType(), True),
+        StructField("date", StringType(), True),
+        StructField("rates", MapType(StringType(), DoubleType()), True),
+    ]
+)
 
 
 def get_spark() -> SparkSession:
     """Create or return a local SparkSession."""
     return (
-        SparkSession.builder
-        .master("local[*]")
+        SparkSession.builder.master("local[*]")
         .appName("exchange_rates_bronze")
         .config("spark.sql.parquet.compression.codec", "snappy")
         .getOrCreate()
@@ -75,8 +76,7 @@ def run(
     logger.info("Bronze: reading raw JSON from %s", raw_path)
 
     df_raw = (
-        spark.read
-        .schema(RAW_SCHEMA)
+        spark.read.schema(RAW_SCHEMA)
         .option("multiLine", True)
         .json(f"{raw_path}/*.json")
     )
@@ -86,25 +86,17 @@ def run(
         return
 
     # Explode the rates map into rows
-    df_exploded = (
-        df_raw
-        .select(
-            from_unixtime(col("timestamp")).alias("api_timestamp"),
-            col("base"),
-            col("date"),
-            explode(col("rates")).alias("currency_code", "rate"),
-            input_file_name().alias("source_file"),
-        )
-        .withColumn("ingestion_ts", current_timestamp())
-    )
+    df_exploded = df_raw.select(
+        from_unixtime(col("timestamp")).alias("api_timestamp"),
+        col("base"),
+        col("date"),
+        explode(col("rates")).alias("currency_code", "rate"),
+        input_file_name().alias("source_file"),
+    ).withColumn("ingestion_ts", current_timestamp())
 
     logger.info("Bronze: writing %d rows to %s", df_exploded.count(), bronze_path)
 
-    (
-        df_exploded.write
-        .mode("overwrite")
-        .parquet(bronze_path)
-    )
+    (df_exploded.write.mode("overwrite").parquet(bronze_path))
 
     logger.info("Bronze layer complete ✓")
 

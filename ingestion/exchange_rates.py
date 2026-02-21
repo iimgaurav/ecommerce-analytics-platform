@@ -62,9 +62,7 @@ def _request_with_retry(url: str, params: Dict) -> Dict:
     last_exception = None
     for attempt in range(1, MAX_RETRIES + 1):
         try:
-            logger.info(
-                "API request (attempt %d/%d): %s", attempt, MAX_RETRIES, url
-            )
+            logger.info("API request (attempt %d/%d): %s", attempt, MAX_RETRIES, url)
             response = requests.get(url, params=params, timeout=30)
             response.raise_for_status()
 
@@ -80,10 +78,8 @@ def _request_with_retry(url: str, params: Dict) -> Dict:
         except (requests.exceptions.RequestException, ValueError) as exc:
             last_exception = exc
             if attempt < MAX_RETRIES:
-                wait = RETRY_BACKOFF_FACTOR ** attempt
-                logger.warning(
-                    "Request failed (%s). Retrying in %ds ...", exc, wait
-                )
+                wait = RETRY_BACKOFF_FACTOR**attempt
+                logger.warning("Request failed (%s). Retrying in %ds ...", exc, wait)
                 time.sleep(wait)
             else:
                 logger.error("All %d attempts failed.", MAX_RETRIES)

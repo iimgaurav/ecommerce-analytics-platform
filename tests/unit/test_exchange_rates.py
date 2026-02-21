@@ -211,8 +211,8 @@ class TestRetryLogic:
         with patch("ingestion.exchange_rates.requests.get") as mock_get:
             # First two calls fail, third succeeds
             fail_resp = MagicMock()
-            fail_resp.raise_for_status.side_effect = (
-                req.exceptions.ConnectionError("timeout")
+            fail_resp.raise_for_status.side_effect = req.exceptions.ConnectionError(
+                "timeout"
             )
 
             ok_resp = MagicMock()
