@@ -9,15 +9,11 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from pyspark.sql import functions as F
-from pyspark.sql.types import (
-    DoubleType,
-    IntegerType,
-    StringType,
-    StructField,
-    StructType,
-)
 from delta.tables import DeltaTable
+from pyspark.sql import functions as F
+from pyspark.sql.types import (DoubleType, IntegerType, StringType,
+                               StructField, StructType)
+
 from spark_jobs.spark_utils import get_spark_session
 
 # ── Config ────────────────────────────────────────────

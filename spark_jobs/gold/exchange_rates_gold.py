@@ -17,17 +17,11 @@ import logging
 from pathlib import Path
 
 from pyspark.sql import SparkSession, Window
-from pyspark.sql.functions import (
-    col,
-    avg,
-    min as spark_min,
-    max as spark_max,
-    count,
-    lag,
-    round as spark_round,
-    when,
-    current_timestamp,
-)
+from pyspark.sql.functions import avg, col, count, current_timestamp, lag
+from pyspark.sql.functions import max as spark_max
+from pyspark.sql.functions import min as spark_min
+from pyspark.sql.functions import round as spark_round
+from pyspark.sql.functions import when
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +94,7 @@ def run(
     spark: SparkSession | None = None,
 ) -> None:
     """Read Silver and produce Gold aggregations."""
-    from ingestion.config import SILVER_DIR, GOLD_DIR, ensure_data_dirs
+    from ingestion.config import GOLD_DIR, SILVER_DIR, ensure_data_dirs
 
     ensure_data_dirs()
     silver_path = str(silver_dir or SILVER_DIR)

@@ -11,13 +11,8 @@ Output:  data/silver/exchange_rates/  (Parquet, partitioned by date)
 import logging
 from pathlib import Path
 
-from pyspark.sql import SparkSession, DataFrame
-from pyspark.sql.functions import (
-    col,
-    lit,
-    when,
-    current_timestamp,
-)
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql.functions import col, current_timestamp, lit, when
 
 logger = logging.getLogger(__name__)
 

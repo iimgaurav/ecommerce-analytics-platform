@@ -10,8 +10,9 @@ can also be run outside of Airflow for development.
 
 from datetime import datetime, timedelta
 
-from airflow import DAG
 from airflow.operators.python import PythonOperator
+
+from airflow import DAG
 
 # ── Default args ────────────────────────────────────────────────────
 

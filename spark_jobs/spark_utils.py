@@ -5,6 +5,7 @@ Configured for Delta Lake support.
 """
 
 import os
+
 from pyspark.sql import SparkSession
 
 

@@ -5,8 +5,8 @@ This script tests the integration between the Airflow DAG and the
 underlying Python/Spark modules without requiring Airflow to be installed.
 """
 
-import sys
 import logging
+import sys
 from pathlib import Path
 
 # Add project root to path
@@ -21,8 +21,8 @@ def test_imports():
     try:
         import ingestion.exchange_rates as ingest
         import spark_jobs.bronze.exchange_rates_bronze as bronze
-        import spark_jobs.silver.exchange_rates_silver as silver
         import spark_jobs.gold.exchange_rates_gold as gold
+        import spark_jobs.silver.exchange_rates_silver as silver
 
         logger.info("✅ All modules imported successfully.")
     except ImportError as e:

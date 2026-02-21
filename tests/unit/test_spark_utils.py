@@ -1,5 +1,6 @@
 import pytest
 from pyspark.sql import SparkSession
+
 from spark_jobs.spark_utils import get_spark_session
 
 
