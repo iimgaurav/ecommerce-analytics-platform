@@ -9,12 +9,11 @@ Output:  data/bronze/exchange_rates/  (Parquet)
 """
 
 import logging
-from datetime import datetime
 from pathlib import Path
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import (col, current_timestamp, explode,
-                                   from_unixtime, input_file_name, lit)
+                                   from_unixtime, input_file_name)
 from pyspark.sql.types import (BooleanType, DoubleType, LongType, MapType,
                                StringType, StructField, StructType)
 

@@ -4,7 +4,7 @@ Utilities for creating Spark sessions and common helper functions.
 Configured for Delta Lake support.
 """
 
-import os
+import logging
 
 from pyspark.sql import SparkSession
 

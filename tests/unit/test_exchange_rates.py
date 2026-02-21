@@ -5,7 +5,6 @@ All API calls are mocked – no real network traffic.
 """
 
 import json
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest

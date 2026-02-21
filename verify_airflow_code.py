@@ -19,10 +19,10 @@ logger = logging.getLogger("verification")
 def test_imports():
     logger.info("Checking module imports...")
     try:
-        import ingestion.exchange_rates as ingest
-        import spark_jobs.bronze.exchange_rates_bronze as bronze
-        import spark_jobs.gold.exchange_rates_gold as gold
-        import spark_jobs.silver.exchange_rates_silver as silver
+        import ingestion.exchange_rates  # noqa: F401
+        import spark_jobs.bronze.exchange_rates_bronze  # noqa: F401
+        import spark_jobs.gold.exchange_rates_gold  # noqa: F401
+        import spark_jobs.silver.exchange_rates_silver  # noqa: F401
 
         logger.info("✅ All modules imported successfully.")
     except ImportError as e:
@@ -34,7 +34,7 @@ def test_dag_methods():
     logger.info("Verifying DAG task callables...")
     # We can't import the DAG file easily without 'airflow' package,
     # but we can verify the functions it calls exist and are typed correctly.
-    from ingestion.exchange_rates import fetch_latest_rates, save_raw_response
+    from ingestion.exchange_rates import save_raw_response
 
     logger.info("Validating ingestion signature...")
     # Mocking the fetch to see if save_raw_response works

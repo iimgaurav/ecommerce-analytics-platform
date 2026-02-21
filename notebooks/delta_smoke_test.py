@@ -10,7 +10,6 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from delta.tables import DeltaTable
-from pyspark.sql import functions as F
 from pyspark.sql.types import (DoubleType, IntegerType, StringType,
                                StructField, StructType)
 
@@ -99,7 +98,7 @@ def run_smoke_test():
     print("\n" + "=" * 55)
     print("  ✅ ALL TESTS PASSED!")
     print(f"  📦 Current table: {current_count} rows (Version 1)")
-    print(f"  ⏪ Time travel:   5 rows  (Version 0)")
+    print("  ⏪ Time travel:   5 rows  (Version 0)")
     print(f"  📁 Delta path:    {DELTA_PATH}")
     print("=" * 55 + "\n")
 
