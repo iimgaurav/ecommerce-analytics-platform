@@ -68,7 +68,6 @@ with DAG(
     catchup=False,
     tags=["exchange-rates", "medallion", "ingestion"],
 ) as dag:
-
     ingest_rates = PythonOperator(
         task_id="ingest_rates",
         python_callable=_ingest,
