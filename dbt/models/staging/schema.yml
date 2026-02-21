@@ -12,7 +12,8 @@ models:
       - name: status
         tests:
           - accepted_values:
-              values: ["completed", "shipped", "pending", "cancelled"]
+              arguments:
+                values: ["completed", "shipped", "pending", "cancelled"]
 
   - name: stg_weather
     description: "Staging table for raw weather data."
