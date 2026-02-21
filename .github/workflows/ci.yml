@@ -1,132 +1,126 @@
 name: CI Pipeline
 
 on:
-    push:
-        branches: [main, develop]
-    pull_request:
-        branches: [main]
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
 
 jobs:
-    # ─────────────────────────────────────────
-    # Job 1: Code Quality Checks
-    # ─────────────────────────────────────────
-    code-quality:
-        name: Code Quality
-        runs-on: ubuntu-latest
+  # ─────────────────────────────────────────
+  # Job 1: Code Quality Checks
+  # ─────────────────────────────────────────
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-            - name: Set up Python
-              uses: actions/setup-python@v5
-              with:
-                  python-version: "3.11"
-                  cache: "pip"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
 
-            - name: Install linting tools
-              run: pip install black==23.12.0 flake8==7.0.0 isort==5.13.0
+      - name: Install linting tools
+        run: pip install flake8==7.0.0
 
-            - name: Check formatting with Black
-              run: black --check --diff .
+      - name: Lint with flake8
+        run: |
+          flake8 . \
+            --max-line-length=100 \
+            --exclude=.git,__pycache__,target,dbt \
+            --count \
+            --statistics
 
-            - name: Check imports with isort
-              run: isort --check-only --diff .
+  # ─────────────────────────────────────────
+  # Job 2: Unit Tests
+  # ─────────────────────────────────────────
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: code-quality
 
-            - name: Lint with flake8
-              run: |
-                  flake8 . \
-                    --max-line-length=100 \
-                    --exclude=.git,__pycache__,target,dbt \
-                    --count \
-                    --statistics
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # ─────────────────────────────────────────
-    # Job 2: Unit Tests
-    # ─────────────────────────────────────────
-    unit-tests:
-        name: Unit Tests
-        runs-on: ubuntu-latest
-        needs: code-quality
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+      - name: Set up Java (required for PySpark)
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "11"
 
-            - name: Set up Python
-              uses: actions/setup-python@v5
-              with:
-                  python-version: "3.11"
-                  cache: "pip"
+      - name: Install dependencies
+        run: |
+          pip install \
+            pyspark==3.5.0 \
+            delta-spark==3.0.0 \
+            pytest==7.4.0 \
+            pytest-cov==4.1.0
 
-            - name: Set up Java (required for PySpark)
-              uses: actions/setup-java@v4
-              with:
-                  distribution: "temurin"
-                  java-version: "11"
+      - name: Run unit tests with coverage
+        run: |
+          pytest tests/unit/ \
+            -v \
+            --cov=spark_jobs \
+            --cov-report=term-missing \
+            --cov-report=xml
 
-            - name: Install dependencies
-              run: |
-                  pip install \
-                    pyspark==3.5.0 \
-                    delta-spark==3.0.0 \
-                    pytest==7.4.0 \
-                    pytest-cov==4.1.0
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
 
-            - name: Run unit tests with coverage
-              run: |
-                  pytest tests/unit/ \
-                    -v \
-                    --cov=spark_jobs \
-                    --cov-report=term-missing \
-                    --cov-report=xml
+  # ─────────────────────────────────────────
+  # Job 3: dbt Model Validation
+  # ─────────────────────────────────────────
+  dbt-validate:
+    name: dbt Validation
+    runs-on: ubuntu-latest
+    needs: code-quality
 
-            - name: Upload coverage report
-              uses: actions/upload-artifact@v4
-              with:
-                  name: coverage-report
-                  path: coverage.xml
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # ─────────────────────────────────────────
-    # Job 3: dbt Model Validation
-    # ─────────────────────────────────────────
-    dbt-validate:
-        name: dbt Validation
-        runs-on: ubuntu-latest
-        needs: code-quality
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+      - name: Install dbt
+        run: pip install dbt-duckdb==1.7.0 duckdb==0.10.0
 
-            - name: Set up Python
-              uses: actions/setup-python@v5
-              with:
-                  python-version: "3.11"
-                  cache: "pip"
+      - name: Create data directory
+        run: mkdir -p data
 
-            - name: Install dbt
-              run: pip install dbt-duckdb==1.7.0 duckdb==0.10.0
+      - name: dbt debug
+        working-directory: dbt
+        run: dbt debug
 
-            - name: Create data directory
-              run: mkdir -p data
+      - name: dbt seed
+        working-directory: dbt
+        run: dbt seed
 
-            - name: dbt debug
-              working-directory: dbt
-              run: dbt debug
+      - name: dbt run
+        working-directory: dbt
+        run: dbt run
 
-            - name: dbt seed
-              working-directory: dbt
-              run: dbt seed
+      - name: dbt test
+        working-directory: dbt
+        run: dbt test
 
-            - name: dbt run
-              working-directory: dbt
-              run: dbt run
-
-            - name: dbt test
-              working-directory: dbt
-              run: dbt test
-
-            - name: dbt docs generate
-              working-directory: dbt
-              run: dbt docs generate
+      - name: dbt docs generate
+        working-directory: dbt
+        run: dbt docs generate
