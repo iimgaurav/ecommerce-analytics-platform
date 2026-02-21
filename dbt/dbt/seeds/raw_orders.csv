@@ -1,0 +1,11 @@
+order_id,customer_name,product,amount,currency,city,order_date
+ORD-001,Alice,Laptop,999.99,USD,Mumbai,2024-01-01
+ORD-002,Bob,Phone,499.99,USD,Delhi,2024-01-01
+ORD-003,Charlie,Tablet,299.99,USD,Bangalore,2024-01-02
+ORD-004,Diana,Watch,199.99,USD,Mumbai,2024-01-02
+ORD-005,Eve,Laptop,999.99,USD,Chennai,2024-01-03
+ORD-006,Frank,Headphones,149.99,USD,Pune,2024-01-03
+ORD-007,Grace,Keyboard,79.99,USD,Delhi,2024-01-04
+ORD-008,Henry,Monitor,349.99,USD,Bangalore,2024-01-04
+ORD-009,Iris,Laptop,999.99,USD,Mumbai,2024-01-05
+ORD-010,Jack,Phone,499.99,USD,Chennai,2024-01-05

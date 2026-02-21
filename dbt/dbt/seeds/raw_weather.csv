@@ -1,0 +1,16 @@
+city,date,temp_celsius,humidity,condition
+Mumbai,2024-01-01,28.5,80,Humid
+Delhi,2024-01-01,15.2,45,Clear
+Bangalore,2024-01-01,22.1,60,Cloudy
+Mumbai,2024-01-02,29.1,82,Humid
+Delhi,2024-01-02,14.8,42,Clear
+Bangalore,2024-01-02,21.8,58,Clear
+Mumbai,2024-01-03,27.9,78,Rainy
+Delhi,2024-01-03,16.1,50,Cloudy
+Bangalore,2024-01-03,23.2,65,Rainy
+Chennai,2024-01-01,32.1,88,Humid
+Chennai,2024-01-02,31.8,86,Humid
+Chennai,2024-01-03,33.2,90,Rainy
+Chennai,2024-01-04,32.5,87,Humid
+Chennai,2024-01-05,31.9,85,Humid
+Pune,2024-01-03,24.3,55,Clear

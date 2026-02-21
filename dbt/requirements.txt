@@ -1,0 +1,6 @@
+boto3
+pytest
+dbt-duckdb
+duckdb
+pyspark
+delta-spark

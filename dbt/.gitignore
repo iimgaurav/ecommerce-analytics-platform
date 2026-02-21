@@ -4,3 +4,5 @@ dbt_modules/
 dbt_packages/  
 data/*.duckdb 
 dbt_internal_packages/
+
+.env

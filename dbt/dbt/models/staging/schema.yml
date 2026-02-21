@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Cleaned and standardized orders"
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: amount_usd
+        tests:
+          - not_null
+      - name: city
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Pune']
+
+  - name: stg_weather
+    description: "Cleaned daily weather data"
+    columns:
+      - name: city
+        tests:
+          - not_null
+      - name: weather_date
+        tests:
+          - not_null
