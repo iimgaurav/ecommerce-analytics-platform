@@ -34,8 +34,7 @@ logger = logging.getLogger(__name__)
 
 def get_spark() -> SparkSession:
     return (
-        SparkSession.builder
-        .master("local[*]")
+        SparkSession.builder.master("local[*]")
         .appName("exchange_rates_gold")
         .config("spark.sql.parquet.compression.codec", "snappy")
         .getOrCreate()
@@ -85,8 +84,8 @@ def _build_rate_changes(df):
             when(
                 col("prev_rate_usd").isNotNull() & (col("prev_rate_usd") > 0),
                 spark_round(
-                    ((col("rate_usd") - col("prev_rate_usd"))
-                     / col("prev_rate_usd")) * 100,
+                    ((col("rate_usd") - col("prev_rate_usd")) / col("prev_rate_usd"))
+                    * 100,
                     4,
                 ),
             ),
@@ -122,7 +121,8 @@ def run(
     summary_df.write.mode("overwrite").parquet(summary_path)
     logger.info(
         "Gold: wrote %d daily-summary rows → %s",
-        summary_df.count(), summary_path,
+        summary_df.count(),
+        summary_path,
     )
 
     # ── Rate changes ────────────────────────────────────────────
@@ -131,7 +131,8 @@ def run(
     changes_df.write.mode("overwrite").parquet(changes_path)
     logger.info(
         "Gold: wrote %d rate-change rows → %s",
-        changes_df.count(), changes_path,
+        changes_df.count(),
+        changes_path,
     )
 
     logger.info("Gold layer complete ✓")

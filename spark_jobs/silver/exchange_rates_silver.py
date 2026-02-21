@@ -24,8 +24,7 @@ logger = logging.getLogger(__name__)
 
 def get_spark() -> SparkSession:
     return (
-        SparkSession.builder
-        .master("local[*]")
+        SparkSession.builder.master("local[*]")
         .appName("exchange_rates_silver")
         .config("spark.sql.parquet.compression.codec", "snappy")
         .getOrCreate()
@@ -42,9 +41,8 @@ def _add_usd_cross_rate(df: DataFrame) -> DataFrame:
     where eur_to_usd is the EUR→USD rate from the same response.
     """
     # Get EUR→USD rate per date (should be one per date)
-    eur_usd = (
-        df.filter(col("currency_code") == "USD")
-        .select(col("date"), col("rate").alias("eur_to_usd"))
+    eur_usd = df.filter(col("currency_code") == "USD").select(
+        col("date"), col("rate").alias("eur_to_usd")
     )
 
     df_with_usd = (
@@ -67,8 +65,9 @@ def _validate_rates(df: DataFrame) -> DataFrame:
     """
     return df.withColumn(
         "is_valid",
-        when(col("rate").isNotNull() & (col("rate") > 0), lit(True))
-        .otherwise(lit(False)),
+        when(col("rate").isNotNull() & (col("rate") > 0), lit(True)).otherwise(
+            lit(False)
+        ),
     )
 
 
@@ -111,12 +110,7 @@ def run(
     row_count = df.count()
     logger.info("Silver: writing %d rows to %s", row_count, silver_path)
 
-    (
-        df.write
-        .mode("overwrite")
-        .partitionBy("date")
-        .parquet(silver_path)
-    )
+    (df.write.mode("overwrite").partitionBy("date").parquet(silver_path))
 
     logger.info("Silver layer complete ✓")
 

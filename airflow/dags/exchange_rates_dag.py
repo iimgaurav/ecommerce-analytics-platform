@@ -13,7 +13,6 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
-
 # ── Default args ────────────────────────────────────────────────────
 
 default_args = {
@@ -28,9 +27,11 @@ default_args = {
 
 # ── Task callables ──────────────────────────────────────────────────
 
+
 def _ingest(**context):
     """Fetch latest exchange rates and save raw JSON."""
     from ingestion.exchange_rates import ingest_latest
+
     path = ingest_latest()
     context["ti"].xcom_push(key="raw_path", value=str(path))
 
@@ -38,18 +39,21 @@ def _ingest(**context):
 def _bronze(**context):
     """Transform raw JSON → Bronze Parquet."""
     from spark_jobs.bronze.exchange_rates_bronze import run
+
     run()
 
 
 def _silver(**context):
     """Transform Bronze → Silver Parquet."""
     from spark_jobs.silver.exchange_rates_silver import run
+
     run()
 
 
 def _gold(**context):
     """Aggregate Silver → Gold Parquet."""
     from spark_jobs.gold.exchange_rates_gold import run
+
     run()
 
 
