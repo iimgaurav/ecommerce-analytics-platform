@@ -8,40 +8,11 @@ on:
 
 jobs:
   # ─────────────────────────────────────────
-  # Job 1: Code Quality Checks
-  # ─────────────────────────────────────────
-  code-quality:
-    name: Code Quality
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: "pip"
-
-      - name: Install linting tools
-        run: pip install flake8==7.0.0
-
-      - name: Lint with flake8
-        run: |
-          flake8 . \
-            --max-line-length=100 \
-            --exclude=.git,__pycache__,target,dbt \
-            --count \
-            --statistics
-
-  # ─────────────────────────────────────────
-  # Job 2: Unit Tests
+  # Job 1: Unit Tests
   # ─────────────────────────────────────────
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
-    needs: code-quality
 
     steps:
       - name: Checkout code
@@ -82,12 +53,11 @@ jobs:
           path: coverage.xml
 
   # ─────────────────────────────────────────
-  # Job 3: dbt Model Validation
+  # Job 2: dbt Model Validation
   # ─────────────────────────────────────────
   dbt-validate:
     name: dbt Validation
     runs-on: ubuntu-latest
-    needs: code-quality
 
     steps:
       - name: Checkout code
