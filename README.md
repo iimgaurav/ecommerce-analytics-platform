@@ -1,3 +1,5 @@
+![CI Pipeline](https://github.com/iimgaurav/ecommerce-analytics-platform/actions/workflows/ci.yml/badge.svg)
+
 # E-Commerce Analytics Platform
 End-to-end Data Engineering project — Medallion Architecture with open source tools Visibility: Public  ← clients will see this 
 ✅ Add README 
