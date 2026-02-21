@@ -1,0 +1,16 @@
+# move everything from ecommerce_dbt/ up into dbt/
+cp -r ecommerce_dbt/* .
+rm -rf ecommerce_dbt
+cd ..
+```
+
+Your `dbt/` folder should now look like:
+```
+dbt/
+├── models/
+│   ├── staging/
+│   ├── intermediate/
+│   └── marts/
+├── tests/
+├── dbt_project.yml
+└── profiles.yml  ← we'll create this next

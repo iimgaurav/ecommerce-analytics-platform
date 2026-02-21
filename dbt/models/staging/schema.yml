@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Staging table for raw orders data."
+    columns:
+      - name: order_id
+        description: "Primary key for orders."
+        tests:
+          - unique
+          - not_null
+      - name: status
+        tests:
+          - accepted_values:
+              values: ["completed", "shipped", "pending", "cancelled"]
+
+  - name: stg_weather
+    description: "Staging table for raw weather data."
+    columns:
+      - name: city
+        tests:
+          - not_null
+      - name: weather_date
+        tests:
+          - not_null

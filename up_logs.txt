@@ -1,0 +1,41 @@
+﻿docker :  Container 
+de_postgres  Running
+At line:1 char:1
++ docker compose -f ..
+\docker\docker-compose
+.yml --env-file 
+..\.env up  ...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: ( Container   
+  de_postgres  Run    
+ning:String) [],     
+RemoteException
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+ Container 
+de_postgres  Waiting
+ Container 
+de_postgres  Waiting
+ Container 
+de_postgres  Healthy
+ Container 
+de_postgres  Healthy
+ Container 
+de_airflow_scheduler  
+Starting
+ Container 
+de_airflow_webserver  
+Starting
+ Container 
+de_airflow_scheduler  
+Started
+ Container 
+de_airflow_webserver  
+Started

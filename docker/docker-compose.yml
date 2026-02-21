@@ -1,0 +1,135 @@
+
+
+x-airflow-common: &airflow-common
+  image: apache/airflow:2.8.0
+  environment:
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__WEBSERVER__EXPOSE_CONFIG: 'true'
+  volumes:
+    - ../airflow/dags:/opt/airflow/dags
+    - ../airflow/plugins:/opt/airflow/plugins
+    - airflow-logs:/opt/airflow/logs
+  depends_on:
+    postgres:
+      condition: service_healthy
+  env_file:
+    - ../.env
+
+services:
+
+  # ─────────────────────────────────────────
+  # PostgreSQL — Airflow metadata database
+  # ─────────────────────────────────────────
+  postgres:
+    image: postgres:15
+    container_name: de_postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # MinIO — Local S3-compatible data lake
+  # ─────────────────────────────────────────
+  minio:
+    image: minio/minio:latest
+    container_name: de_minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+    ports:
+      - "9000:9000"   # API endpoint
+      - "9001:9001"   # Web UI
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      retries: 5
+    restart: unless-stopped
+    env_file:
+      - ../.env
+
+  # ─────────────────────────────────────────
+  # Airflow — DB init (runs once)
+  # ─────────────────────────────────────────
+  airflow-init:
+    <<: *airflow-common
+    container_name: de_airflow_init
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db migrate &&
+        airflow users create \
+          --username admin \
+          --password admin \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@example.com
+    restart: on-failure
+
+  # ─────────────────────────────────────────
+  # Airflow Webserver — UI at localhost:8080
+  # ─────────────────────────────────────────
+  airflow-webserver:
+    <<: *airflow-common
+    container_name: de_airflow_webserver
+    command: webserver
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      retries: 5
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # Airflow Scheduler — runs your DAGs
+  # ─────────────────────────────────────────
+  airflow-scheduler:
+    <<: *airflow-common
+    container_name: de_airflow_scheduler
+    command: scheduler
+    restart: unless-stopped
+
+
+# ─────────────────────────────────────────
+  # Apache Superset — BI Dashboard at :8088
+  # ─────────────────────────────────────────
+  superset:
+    image: apache/superset:3.0.0
+    container_name: de_superset
+    environment:
+      SUPERSET_SECRET_KEY: "de_project_super_secret_key_change_me"
+      PYTHONPATH: /app/pythonpath
+    ports:
+      - "8088:8088"
+    volumes:
+      - superset-data:/app/superset_home
+      - ../data:/app/data          # mounts your DuckDB warehouse file
+    depends_on:
+      - postgres
+    restart: unless-stopped
+# ─────────────────────────────────────────
+# Named volumes — data persists on restart
+# ─────────────────────────────────────────
+volumes:
+  postgres-data:
+  minio-data:
+  airflow-logs:
+  superset-data:
