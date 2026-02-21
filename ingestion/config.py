@@ -5,6 +5,7 @@ Loads environment variables from .env and exposes typed constants.
 
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Load .env from project root

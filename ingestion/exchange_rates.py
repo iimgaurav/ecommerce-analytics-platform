@@ -19,15 +19,9 @@ from typing import Dict, List, Optional
 
 import requests
 
-from ingestion.config import (
-    EXCHANGE_RATES_API_KEY,
-    EXCHANGE_RATES_BASE_URL,
-    RAW_DIR,
-    DEFAULT_SYMBOLS,
-    MAX_RETRIES,
-    RETRY_BACKOFF_FACTOR,
-    ensure_data_dirs,
-)
+from ingestion.config import (DEFAULT_SYMBOLS, EXCHANGE_RATES_API_KEY,
+                              EXCHANGE_RATES_BASE_URL, MAX_RETRIES, RAW_DIR,
+                              RETRY_BACKOFF_FACTOR, ensure_data_dirs)
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(

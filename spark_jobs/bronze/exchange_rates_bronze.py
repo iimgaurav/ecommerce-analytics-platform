@@ -13,23 +13,10 @@ from datetime import datetime
 from pathlib import Path
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import (
-    col,
-    explode,
-    from_unixtime,
-    lit,
-    current_timestamp,
-    input_file_name,
-)
-from pyspark.sql.types import (
-    StructType,
-    StructField,
-    StringType,
-    DoubleType,
-    BooleanType,
-    LongType,
-    MapType,
-)
+from pyspark.sql.functions import (col, current_timestamp, explode,
+                                   from_unixtime, input_file_name, lit)
+from pyspark.sql.types import (BooleanType, DoubleType, LongType, MapType,
+                               StringType, StructField, StructType)
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +53,7 @@ def run(
     Each JSON file is exploded so that every currency code becomes a
     separate row, making downstream queries far simpler.
     """
-    from ingestion.config import RAW_DIR, BRONZE_DIR, ensure_data_dirs
+    from ingestion.config import BRONZE_DIR, RAW_DIR, ensure_data_dirs
 
     ensure_data_dirs()
     raw_path = str(raw_dir or RAW_DIR)
